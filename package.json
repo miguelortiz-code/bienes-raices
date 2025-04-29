@@ -1,0 +1,12 @@
+{
+  "name": "bienes-racies",
+  "version": "1.0.0",
+  "main": "src",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["MVC", "Tailwind", "MySQL", "Sequelize", "Pug"],
+  "author": "MIGUEL ORTIZ",
+  "license": "ISC",
+  "description": "Proyecto de bienes raíces que permite visualizar casas, apartamentos,contactar directamente al vendedor y explorar las propiedades a través de un mapa interactivo."
+}
