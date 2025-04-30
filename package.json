@@ -2,9 +2,10 @@
   "name": "bienes-racies",
   "version": "1.0.0",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
-    "start" : "node src/index.js",
-    "dev" : "nodemon src/inde.js"
+    "start": "node src/index.js",
+    "dev": "nodemon src/inde.js"
   },
   "keywords": [
     "MVC",
@@ -17,7 +18,8 @@
   "license": "ISC",
   "description": "Proyecto de bienes raíces que permite visualizar casas, apartamentos,contactar directamente al vendedor y explorar las propiedades a través de un mapa interactivo.",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pug": "^3.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
