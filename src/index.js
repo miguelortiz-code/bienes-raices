@@ -7,6 +7,9 @@ const app  = express();
 app.set('view engine', 'pug');
 app.set('views', './src/views');
 
+// FOLDER PUBLIC
+app.use(express.static('./src/public'));
+
 //Routing
 app.use('/auth', UsersRoutes);
 
