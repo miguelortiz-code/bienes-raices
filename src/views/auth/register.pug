@@ -1,5 +1,31 @@
 extends ../layout/index
 
 block contenido
-  div
-    h2.text-center.text-2xl.font-extrabold Crear Cuenta
+  .py-10
+    h1.text-4xl.my-10.font-extrabold.text-center Bienes
+      span.font-normal.ml-3 Raices
+    .mt-8.mx-auto.max-w-md
+      .bg-white.py-8.px-4.shadow-lg.rounded-md
+        form.space-y-5
+          h2.text-center.text-2xl.font-extrabold.mb-10= pagina
+          
+          div
+            label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="full_name") nombre completo
+            input(type="text" placeholder="Jhon Doe" name="full_name" id="full_name" class="w-full px-3 py-2 border border-gray-300 outline outline-none cursor-pointer rounded-md placeholder-gray-400")
+          
+          div
+            label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="email") correo electrónico
+            input(type="email" placeholder="correo@correo.com" name="email" id="email" class="w-full px-3 py-2 border border-gray-300 outline outline-none cursor-pointer rounded-md placeholder-gray-400")
+          
+          div
+            label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="password") contraseña
+            input(type="password" placeholder="*****" name="password" id="password" class="w-full px-3 py-2 border border-gray-300 outline outline-none cursor-pointer rounded-md placeholder-gray-400")
+          
+          div
+            label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="confirm_password") confirmar contraseña
+            input(type="password" placeholder="*****" name="confirm_password" id="confirm_password" class="w-full px-3 py-2 border border-gray-300 outline outline-none cursor-pointer rounded-md placeholder-gray-400")
+          
+          input(type="submit" value="Crear Cuenta" class="w-full bg-indigo-600 hover:bg-indigo-700 py-2 text-white font-bold rounded-md cursor-pointer")
+
+          div(class="flex items-center justify-center")
+            a(href="/auth/login" class="text-gray-500 text-sm hover:text-gray-900") ¿Ya tienes cuenta? Inicia Sesion
