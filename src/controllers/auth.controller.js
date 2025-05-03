@@ -1,3 +1,5 @@
+
+import Users from '../models/auth.model.js';
 const formularioLogin  =  (req, res) =>{
     res.render('auth/login', {
         pagina: 'Iniciar Sesión'
@@ -10,6 +12,12 @@ const formularioRegister  =  (req, res) =>{
     });
 }
 
+const register = async (req, res) =>{
+    const user = await Users.create(req.body);
+    res.json(user);
+};
+
+
 const formularioRecoveryPassword  =  (req, res) =>{
     res.render('auth/recover-password', {
         pagina: 'Recuperar  Contraseña'
@@ -19,5 +27,6 @@ const formularioRecoveryPassword  =  (req, res) =>{
 export {
     formularioLogin,
     formularioRegister,
-    formularioRecoveryPassword
+    formularioRecoveryPassword,
+    register
 }
