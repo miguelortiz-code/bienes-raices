@@ -19,6 +19,7 @@
   "license": "ISC",
   "description": "Proyecto de bienes raíces que permite visualizar casas, apartamentos,contactar directamente al vendedor y explorar las propiedades a través de un mapa interactivo.",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
