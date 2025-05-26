@@ -1,4 +1,6 @@
 import express from 'express';
+import csrf from 'csurf';
+import cookieParser from 'cookie-parser';
 import UsersRoutes from './routes/auth.routes.js';
 import connectDB from './config/connection.js';
 
@@ -10,6 +12,12 @@ connectDB();
 
 // Habilitar los request
 app.use(express.urlencoded({extended: true}));
+
+// Habilitar cookie parser
+app.use(cookieParser());
+
+// Habilidar el CSRF
+app.use(csrf({cookie: true}))
 // Habilitar pug
 app.set('view engine', 'pug');
 app.set('views', './src/views');
@@ -22,7 +30,7 @@ app.use('/auth', UsersRoutes);
 
 
 // Definir el puerto y arrancar el proyecto
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.listen(port , ()=>{
     console.log(`El servidor está corriendo en el puerto ${port}`);
 });

@@ -1,6 +1,10 @@
 import {check, validationResult} from 'express-validator';
 import Users from '../models/auth.model.js';
-import { json } from 'sequelize';
+import { generateId } from '../helpers/tokens.js';
+import { emailRegistro } from '../helpers/emails.js'; 
+
+
+
 const formularioLogin  =  (req, res) =>{
     res.render('auth/login', {
         pagina: 'Iniciar Sesión'
@@ -9,7 +13,8 @@ const formularioLogin  =  (req, res) =>{
 
 const formularioRegister  =  (req, res) =>{
     res.render('auth/register', {
-        pagina: 'Crear Cuenta'
+        pagina: 'Crear Cuenta',
+        csrfToken: req.csrfToken()
     });
 }
 
@@ -27,6 +32,7 @@ const register = async (req, res) =>{
     if(!result.isEmpty()){
         return res.render('auth/register', {
             pagina: 'Crear Cuenta',
+            csrfToken: req.csrfToken(),
             errors: result.array(),
             user: {
                 name: req.body.name,
@@ -43,6 +49,7 @@ const register = async (req, res) =>{
         if (existeCorreo) {
             return res.render('auth/register', {
                 pagina: 'Crear Cuenta',
+                csrfToken: req.csrfToken(),
                 errors: [{ msg: 'El usuario ya está registrado' }],
                 user: {
                     name: req.body.name,
@@ -50,14 +57,26 @@ const register = async (req, res) =>{
                 }
             });
         }
-
-        await Users.create({
+        // Almacenar el usuario
+       const user = await Users.create({
             name,
             email,
             password,
-            token:123
+            token:generateId()
         });
-        return res.redirect('/auth/login');
+
+        // Enviar email de confirmación
+        emailRegistro({
+            name: user.name,
+            email: user.email,
+            token: user.token
+        });
+
+        // Mostrar mensaje de confirmación
+        res.render('templates/mensaje',{
+            pagina: 'Cuenta creada correctamente',
+            mensaje: 'Hemos enviado un mensaje de confirmación, da click en el enlace'
+        });
 
     }catch(error){
         console.error(error);
@@ -79,9 +98,36 @@ const formularioRecoveryPassword  =  (req, res) =>{
     });
 }
 
+// Función para confirma la cuenta del usuario registrado
+const confirmEmail = async (req, res, ) =>{
+
+    const {token} = req.params;
+    // Verificar si no el token es valido
+    const user = await Users.findOne({where: {token}});
+    if(!user){
+      res.render('auth/confirm-account', {
+            pagina: 'Error al confirmar la cuenta',
+            mensaje: 'Hubo un error al intentar confirmar tu cuenta, intenta de nuevo',
+            error: true
+        });
+    }
+
+
+    // Confirmar cuenta del usuario 
+    user.token = null;
+    user.confirmado = true;
+    await user.save();
+
+    res.render('auth/confirm-account', {
+            pagina: 'Cuenta confirmada',
+            mensaje: 'La cuenta se confirmo correctamente'
+    });
+};
+
 export {
     formularioLogin,
     formularioRegister,
     formularioRecoveryPassword,
-    register
+    register,
+    confirmEmail
 }
