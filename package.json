@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "css": "npx @tailwindcss/cli -i ./public/css/tailwind.css -o ./public/css/app.css --watch"
   },
   "keywords": [
     "MVC",
@@ -18,9 +19,13 @@
   "license": "ISC",
   "description": "Proyecto de bienes raices donde se pueden publicar casas, apartamentos para poder vender",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pug": "^3.0.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@tailwindcss/cli": "^4.1.10",
+    "@tailwindcss/postcss": "^4.1.10",
+    "nodemon": "^3.1.10",
+    "tailwindcss": "^4.1.10"
   }
 }
