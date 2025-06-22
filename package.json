@@ -1,0 +1,26 @@
+{
+  "name": "bienes-raices",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "MVC",
+    "Pug",
+    "Tailwind",
+    "MySql",
+    " Sequelize"
+  ],
+  "author": "Miguel Ortiz",
+  "license": "ISC",
+  "description": "Proyecto de bienes raices donde se pueden publicar casas, apartamentos para poder vender",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
