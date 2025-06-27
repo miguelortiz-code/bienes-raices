@@ -3,19 +3,24 @@ block contenido
     .py-10
         h1.text-5xl.my-10.font-extrabold.text-center Bienes
             span.font-normal.ml-2 Raices
+
+        if errors
+            div(class="absolute top-5 right-5 max-w-md mx-auto")
+                each error in errors                
+                    p(class="bg-red-600 rounded-lg transition-all text-white uppercase text-xs text-center p-2 mb-1.5 font-bold")=error.msg
         .mt-8.mx-auto.max-w-md
             .bg-white.py-8.px-4.shadow-lg.rounded-lg
-                form(action="" class="space-y-5")
+                form(action="/auth/register" method="POST" class="space-y-5")
                     h2(class="text-center text-3xl font-extrabold capitalize text-gray-800")= pagina
                     p(class="text-gray-600 text-center mt-2 text-sm font-medium") Crea tu cuenta para publicar y vender tus propiedades fácilmente
         
                     div
                         label(for="name" class="block text-sm uppercase text-gray-500 mb-2 font-bold") nombre
-                        input(type="text" id="name" name="name" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400" placeholder="Jhon Doe")
+                        input(type="text" id="name" name="name" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400" placeholder="Jhon Doe" value= user ? user.name : '')
                     
                     div
                         label(for="email" class="block text-sm uppercase text-gray-500 mb-2 font-bold") correo electronico
-                        input(type="email" id="email" name="email" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400" placeholder="jhondoe@gmail.com")
+                        input(type="email" id="email" name="email" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400" placeholder="jhondoe@gmail.com" value= user ? user.email : '')
                     
                     div
                         label(for="password" class="block text-sm uppercase text-gray-500 mb-2 font-bold") contraseña
