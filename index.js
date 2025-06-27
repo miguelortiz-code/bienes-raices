@@ -31,7 +31,7 @@ app.use(express.static('public'));
 
 
 // Definir el puerto y arrancar el proyecto
-const port = 3000;
+const port = process.env.backend_port || 3000;
 app.listen(port, () =>{
     console.log(`Arrancando el proyecto en el puerto ${port}`);
 });

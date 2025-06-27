@@ -1,7 +1,9 @@
 import { check, validationResult } from "express-validator";
 import bcrypt from 'bcrypt';
 import Users from "../models/auth.model.js";
-import generateId from "../helpers/token.js";
+import {generateId} from "../helpers/token.js";
+import {emailRegister} from '../helpers/emails.js';
+import { where } from "sequelize";
 
 // Vista del formulario de login
 const login = (req, res) => {
@@ -87,10 +89,44 @@ const registerForm = async (req, res) => {
     token: generateId()
   });
 
-  res.json(user);
+  // Enviar mensaje de confirmación
+  emailRegister({
+      name: user.name,
+      email: user.email,
+      token: user.token
+  });
 
+  
+  // Mostrar mensaje de confirmación
+  res.render('templates/mensaje', {
+    pagina: 'Cuenta Creada correctamente',
+    message: 'Te hemos enviado un correo con un enlace de confirmación. Por favor, revisa tu bandeja de entrada y sigue las instrucciones para activar tu cuenta.',
+  });
 };
 
+// Función para confirmar cuenta
+const ConfirmAccount = async (req, res) =>{
+    const { token } = req.params; // Extraer el token de la url
+    const user = await Users.findOne({where: {token}});  // Verificar si el token es valido
+    // console.log(user);
+
+    if(!user){
+      return res.render('auth/confirm',{
+        pagina: 'Error al confirmar tu cuenta',
+        message: 'La cuenta no existe o el enlace de confirmación no es válido. Intenta nuevamente.',
+        error: true
+      })
+    }
+    
+    // Confirmar cuenta del usuario
+    user.token = null;
+    user.confirmed = true;
+    await user.save();
+    res.render('auth/confirm', {
+      pagina: 'Cuenta confirmada',
+      message: 'Tu cuenta ha sido confirmada exitosamente. Ya puedes iniciar sesión y comenzar a publicar tus propiedades.'
+    });
+};
 
 // Vista para recordar la contraseña
 const forgotPassword = (req, res) => {
@@ -99,4 +135,4 @@ const forgotPassword = (req, res) => {
   });
 };
 
-export { login, register, forgotPassword, registerForm };
+export { login, register, forgotPassword, registerForm, ConfirmAccount };

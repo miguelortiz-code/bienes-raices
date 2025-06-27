@@ -1,0 +1,12 @@
+extends ../layout/index
+block contenido
+    .py-10
+        h1.text-5xl.my-10.font-extrabold.text-center Bienes
+            span.font-normal.ml-2 Raices
+        div(class="bg-white shadow-lg py-8 px-4 rounded-lg max-w-md mx-auto")
+            h2(class= error ? 'text-red-500' : 'text-green-500').text-center.text-3xl.font-extrabold.uppercase.mb-5= pagina
+            p(class= error ? 'bg-red-500' : 'bg-green-500').py-2.px-5.rounded-lg.w-full.text-white.text-center.font-bold.uppercase= message
+                if error
+                    a(href="/auth/register" class="inline-block w-full mt-5 text-center bg-red-500 p-2 rounded-lg hover:bg-red-700 ") registrarme
+                else
+                    a(href="/auth/login" class="inline-block w-full mt-5 text-center bg-green-500 p-2 rounded-lg hover:bg-green-700 ") iniciar sesion
