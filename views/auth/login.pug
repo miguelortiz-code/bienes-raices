@@ -3,9 +3,15 @@ block contenido
     .py-10
         h1.text-5xl.my-10.font-extrabold.text-center Bienes
             span.font-normal.ml-2 Raices
+        if errors
+            div(class="absolute top-5 right-5 max-w-md mx-auto")
+                each error in errors                
+                    p(class="bg-red-600 rounded-lg transition-all text-white uppercase text-xs text-center p-2 mb-1.5 font-bold")=error.msg
+        
         .mt-8.mx-auto.max-w-md
             .bg-white.py-8.px-4.shadow-lg.rounded-lg
-                form(action="" class="space-y-5")
+                form(action="/auth/login" method ="POST" class="space-y-5")
+                    input(type="hidden" name="_csrf" value= csrfToken)
                     h2(class="text-center text-3xl font-extrabold capitalize text-gray-800")= pagina
                     p(class="text-gray-600 text-center mt-2 text-sm font-medium") Accede con tus credenciales para administrar tus propiedades.
                     
