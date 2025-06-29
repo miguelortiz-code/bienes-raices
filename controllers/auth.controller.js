@@ -2,8 +2,9 @@ import { check, validationResult } from "express-validator";
 import bcrypt from 'bcrypt';
 import Users from "../models/auth.model.js";
 import {generateId} from "../helpers/token.js";
-import {emailRegister} from '../helpers/emails.js';
+import {emailRegister, emailResetPassword} from '../helpers/emails.js';
 import { where } from "sequelize";
+import AsyncQueue from "sequelize/lib/dialects/mssql/async-queue";
 
 // Vista del formulario de login
 const login = (req, res) => {
@@ -111,7 +112,6 @@ const registerForm = async (req, res) => {
 const ConfirmAccount = async (req, res) =>{
     const { token } = req.params; // Extraer el token de la url
     const user = await Users.findOne({where: {token}});  // Verificar si el token es valido
-    // console.log(user);
 
     if(!user){
       return res.render('auth/confirm',{
@@ -135,7 +135,122 @@ const ConfirmAccount = async (req, res) =>{
 const forgotPassword = (req, res) => {
   res.render("auth/forgot-password", {
     pagina: "Recupera tu Contraseña",
+    csrfToken: req.csrfToken()
   });
 };
 
-export { login, register, forgotPassword, registerForm, ConfirmAccount };
+// Función para reestablecer la contraseña
+const resetPassword  = async (req, res) =>{
+ // Validación de campos
+  await check("email")
+    .notEmpty()
+    .withMessage("El correo es obligatorio")
+    .run(req);
+  await check("email")
+    .isEmail()
+    .withMessage("El formato del correo no es valido")
+    .run(req);
+  let result = validationResult(req);
+
+  // Verificar si el resultado es vacio
+  if (!result.isEmpty()) {
+    // Errores
+    return res.render("auth/forgot-password", {
+      pagina: "Recupera tu contraseña",
+      csrfToken: req.csrfToken(),
+      errors: result.array(),
+    });
+  }
+  // Buscar al usuario por medio del email
+  const {email }= req.body;
+  const user =  await Users.findOne({where: {email}});
+  if(!user){
+    res.render('auth/forgot-password', {
+      pagina: 'Recupera tu contraseña',
+      csrfToken: req.csrfToken(),
+      errors: [{msg: 'El correo electrónico no se encuentra registrado'}]
+    })
+  }
+
+  // Generar nuevo token
+  user.token = generateId();
+  await user.save()
+
+  // Enviar Email
+  emailResetPassword({
+    email: user.email,
+    name: user.name,
+    token: user.token
+  })
+
+  // Renderizar vista
+  res.render('templates/mensaje', {
+    pagina: 'Restablece tu contraseña',
+    message: 'Te hemos enviado un correo con las instrucciones para restablecer tu contraseña. Por favor, revisa tu bandeja de entrada.'
+  });
+};
+
+
+const checkToken = async (req, res) =>{
+  const { token } = req.params; // Extraer token de la url
+  const user = await Users.findOne({where: {token}}); // Consultar al usuario mediante el token
+  if(!user){
+    // Error si el usuario no existe
+    return res.render('auth/confirm', {
+      pagina: 'Error al reestablecer tu contraseña',
+      message: 'La cuenta no existe o el enlace para restablecer la contraseña no es válido o ha expirado. Por favor, solicita uno nuevo.',
+      error: true
+    });
+  }
+
+  // Mostrar el formulario para cambiar la contraseña
+  res.render('auth/reset-password', {
+    pagina: 'Reestablece tu contraseña',
+    csrfToken: req.csrfToken()
+  })
+};
+
+const newPassword = async (req, res) =>{
+  // Validar campos
+  await check("password").notEmpty().withMessage('La contraseña es obligatoria').run(req)
+  await check("password")
+    .isLength({ min: 6 })
+    .withMessage("La contraseña debe tener minino 6 caracteres")
+    .run(req);
+  await check("confirm_password")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Las contraseñas no coinciden");
+      }
+      return true;
+    })
+    .run(req);
+  let result = validationResult(req);
+
+  // Verificar si el resultado es vacio
+  if (!result.isEmpty()) {
+    // Errores
+    return res.render("auth/reset-password", {
+      pagina: "Reestablece tu contraseña",
+      csrfToken: req.csrfToken(),
+      errors: result.array(),
+    });
+  }
+  const { token } = req.params;
+  const {password } = req.body;
+  // Identificar que usuario realiza el cambio de contraseña
+  const user = await Users.findOne({where: {token}});
+  // Hashear password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(password, salt);
+  user.token = null;
+  await user.save();
+
+  // Mostrar vista de cambio exitoso
+  res.render('auth/confirm', {
+    pagina: 'Cambio exitoso',
+    message: 'Tu contraseña ha sido cambiada correctamente. Ya puedes iniciar sesión con tu nueva contraseña.'
+  });
+};
+
+export { login, register, forgotPassword, registerForm, ConfirmAccount, resetPassword, checkToken, newPassword };
