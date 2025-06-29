@@ -16,6 +16,7 @@ const login = (req, res) => {
 const register = (req, res) => {
   res.render("auth/register", {
     pagina: "Crea tu Cuenta",
+    csrfToken: req.csrfToken()
   });
 };
 
@@ -57,6 +58,7 @@ const registerForm = async (req, res) => {
     // Errores
     return res.render("auth/register", {
       pagina: "Crear Cuenta",
+      csrfToken: req.csrfToken(),
       errors: result.array(),
       user: {
         name: req.body.name,
@@ -71,6 +73,7 @@ const registerForm = async (req, res) => {
   if (existUser) {
     return res.render("auth/register", {
       pagina: "Crear Cuenta",
+      csrfToken: req.csrfToken(),
       errors: [{msg: 'El usuario ya se encuentra registrado'}],
       user: {
         name,
