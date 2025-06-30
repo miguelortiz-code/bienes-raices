@@ -1,6 +1,48 @@
 extends ../layout/index
 block contenido
     .py-10
-        h2(class="text-center text-3xl font-extrabold capitalize text-black")= pagina
+        div(class="bg-white shadow-lg py-8 px-4 rounded-lg mx-auto max-w-4xl my-10 md:px-10")
+            h2(class="text-center text-3xl font-extrabold capitalize text-gray-800")= pagina
+            form(action="" method="POST" class="space-y-8")
+                div.space-y-6
+                    h3.text-lg.leading-6.mt-10.font-medium.text-gray-900.uppercase información general
+                    p.text-gray-600 Añade información sobre la propiedad en venta
+                    
+                    div
+                        label(for="title" class="block text-sm uppercase text-gray-500 mb-2 font-bold") titulo del propiedad
+                        input(type="text" id="title" name="title" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400 cursor-pointer" placeholder="Casa en la playa")
 
-        p aquí ira el formulario de propiedades 
+                    div(class="space-y-5 md:flex md:gap-4 md:space-y-0")                   
+                        div(class="md:w-1/2")
+                            label(for="category" class="block text-sm uppercase text-gray-500 mb-2 font-bold") categoria
+                            select(id="category" name="category" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400 cursor-pointer")
+                                option(value="") -- Seleciona la categoria --
+                        
+                        div(class="md:w-1/2")
+                            label(for="price" class="block text-sm uppercase text-gray-500 mb-2 font-bold") precio
+                            select(id="price" name="price" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400 cursor-pointer")
+                                option(value="") -- Seleciona el rango de precio --
+
+                    div(class="space-y-5 md:flex md:gap-4 md:space-y-0")                   
+                        div(class="md:w-1/3")
+                            label(for="rooms" class="block text-sm uppercase text-gray-500 mb-2 font-bold") habitaciones
+                            select(id="rooms" name="rooms" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400 cursor-pointer")
+                                option(value="") -- Cantidad de habitaciones --
+                                - let h = 1;
+                                    while h < 5
+                                        option(value=h) #{h++}
+                        
+                        div(class="md:w-1/3")
+                            label(for="bathrooms" class="block text-sm uppercase text-gray-500 mb-2 font-bold") baños
+                            select(id="bathrooms" name="bathrooms" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400 cursor-pointer")
+                                option(value="") -- Cantidad de baños --
+                                - let b = 1;
+                                    while b < 5
+                                        option(value=b) #{b++}
+                        div(class="md:w-1/3")
+                            label(for="parking" class="block text-sm uppercase text-gray-500 mb-2 font-bold") parqueaderos
+                            select(id="parking" name="parking" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400 cursor-pointer")
+                                option(value="") -- Cantidad de parqueaderos --
+                                - let p = 1;
+                                    while p < 5
+                                        option(value=p) #{p++} 

@@ -8,6 +8,7 @@ const properties =  (req, res) =>{
     })
 }
 
+// Vista del formulario para crear las propiedades
 const newProperty = (req, res) =>{
     res.render('properties/new-property',{
         pagina: 'Crear nueva propiedad',
