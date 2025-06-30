@@ -14,6 +14,10 @@ block contenido
                         label(for="title" class="block text-sm uppercase text-gray-500 mb-2 font-bold") titulo del propiedad
                         input(type="text" id="title" name="title" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400 cursor-pointer" placeholder="Casa en la playa")
 
+                    div
+                        label(for="description" class="block text-sm uppercase text-gray-500 mb-2 font-bold") descripción de la propiedad
+                        textarea(name="description" id="description" class="w-full px-3 py-2 border border-gray-300 outline-none rounded-md placeholder-gray-400 cursor-pointer" placeholder="Casa en la playa cerca al mar")
+
                     div(class="space-y-5 md:flex md:gap-4 md:space-y-0")                   
                         div(class="md:w-1/2")
                             label(for="category" class="block text-sm uppercase text-gray-500 mb-2 font-bold") categoria
@@ -62,8 +66,8 @@ block contenido
                 div
                     p(class="street")
                 input(type="hidden" name="street" id="street")
-                input(type="hidden" name="lat" id="lat")
-                input(type="hidden" name="lng" id="lng")
+                input(type="hidden" name="latitude" id="lat")
+                input(type="hidden" name="longitude" id="lng")
 block scripts
     script(src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js")
     script(src="https://unpkg.com/esri-leaflet@3.0.8/dist/esri-leaflet.js")
