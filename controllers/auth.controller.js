@@ -79,7 +79,7 @@ const loginForm = async (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: true
-  }).redirect('/mis-propiedades');
+  }).redirect('/my-properties');
 };
 
 // Vista del formulario de registro

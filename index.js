@@ -2,6 +2,7 @@ import express from 'express';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import usersRoutes from './routes/users.routes.js';
+import propertiesRoutes from './routes/properties.routes.js';
 import db from './config/db.js';
 
 // Crear la app
@@ -30,7 +31,7 @@ app.set('view engine', 'pug');
 app.set('views', './views');
 // Routing
 app.use('/auth', usersRoutes);
-
+app.use('/', propertiesRoutes);
 
 // Archivos Públicos
 app.use(express.static('public'));
