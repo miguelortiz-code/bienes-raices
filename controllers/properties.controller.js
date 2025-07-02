@@ -50,8 +50,9 @@ const saveProperty  = async (req, res) => {
 
    // Crear registro de propiedad
     const {title, description, rooms, bathrooms, parking, street, latitude, longitude, price: id_price, category: id_category} = req.body;
-   try{
-        const  propertiSaved = await Properties.create({
+    const {id: id_user} = req.user
+    try{
+        const  propertySaved = await Properties.create({
             title,
             description,
             rooms,
@@ -61,8 +62,13 @@ const saveProperty  = async (req, res) => {
             latitude,
             longitude,
             id_price,
-            id_category
-        })
+            id_category,
+            id_user
+        });
+    // Obtener el id de la propiedad Creada
+    const {id} = propertySaved;
+    // Redireccionar al usuario a la visa de subir imagen
+    res.redirect(`/properties/add-image/${id}`)
    }catch(error){
         console.log(error)
    }

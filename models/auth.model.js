@@ -11,7 +11,7 @@ const Users = db.define(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -20,10 +20,17 @@ const Users = db.define(
     token: DataTypes.STRING,
     confirmed: DataTypes.BOOLEAN,
   },
-  { 
+  {
     timestamps: true,
-    underscored: true
- }
+    underscored: true,
+    scopes: {
+      hideData: {
+        attributes: {
+          exclude: ["password", "token", "confirmed", "createdAt", "updatedAt"],
+        },
+      },
+    },
+  }
 );
 
 export default Users;
