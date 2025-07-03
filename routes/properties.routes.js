@@ -1,11 +1,14 @@
 import express from 'express';
 import {body} from 'express-validator';
-import { properties, newProperty, saveProperty } from '../controllers/properties.controller.js';
+import { properties, newProperty, saveProperty, addImageProperty } from '../controllers/properties.controller.js';
 import protectRoutes from '../middleware/protect.routes.middleware.js';
 const router = express.Router();
 
 router.get('/my-properties',protectRoutes, properties);
 router.get('/properties/new-property',protectRoutes,  newProperty);
+router.get('/properties/add-image/:code', protectRoutes, addImageProperty)
+
+// Router POST
 router.post('/properties/new-property',
     protectRoutes,
     body('title').notEmpty().withMessage('El titulo del anuncio es obligatorio'),
@@ -17,4 +20,8 @@ router.post('/properties/new-property',
     body('parking').isNumeric().withMessage('Debes seleccionar cantidad de parqueaderos'),
     body('latitude').notEmpty().withMessage('Ubica la propiedad en el mapa'),
     saveProperty);
+
+router.post('/properties/add-image/:code', (req, res) =>{
+    console.log('Subiendo imagen');
+})
 export default router

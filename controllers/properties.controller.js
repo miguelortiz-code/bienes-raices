@@ -1,10 +1,10 @@
-import { validationResult } from 'express-validator';
+import { header, validationResult } from 'express-validator';
 import {Categories, Prices, Properties} from '../models/index.js';
+import { where } from 'sequelize';
 // Vista de mis propiedades
 const properties =  (req, res) =>{
     res.render('properties/mis-properties',{
-        pagina: 'Mis propiedades',
-        header: true
+        pagina: 'Mis propiedades'
     })
 }
 
@@ -18,7 +18,6 @@ const newProperty  = async (req, res) =>{
     res.render('properties/new-property',{
         pagina: 'Crear nueva propiedad',
         csrfToken: req.csrfToken(),
-        header:true,
         categories,
         prices,
         data: {}
@@ -40,7 +39,6 @@ const saveProperty  = async (req, res) => {
     return res.render('properties/new-property',{
         pagina: 'Crear nueva propiedad',
         csrfToken: req.csrfToken(),
-        header:true,
         categories,
         prices,
         errors: result.array(),
@@ -69,9 +67,33 @@ const saveProperty  = async (req, res) => {
     const {id} = propertySaved;
     // Redireccionar al usuario a la visa de subir imagen
     res.redirect(`/properties/add-image/${id}`)
-   }catch(error){
+   }catch(error){ 
         console.log(error)
    }
 };
 
-export { properties, newProperty, saveProperty }
+// Vista para agregar una nueva imagen a la propiedad creada
+const addImageProperty = async (req, res) =>{
+    const {code} = req.params
+    // Validar que la propiedad exista
+    const property = await Properties.findOne({where: {code}})
+    if(!property){
+        return res.redirect('/my-properties')
+    }
+    // Validar que la propiedad no este publicada
+    if(property.published){
+        return res.redirect('/my-properties')
+    }
+    // Validar que la propiedad pertenece a quien visita la página
+    if(req.user.id.toString() !== property.id_user.toString()){
+        return res.redirect('/my-properties')
+    }
+
+    res.render('properties/add-image',{
+        pagina: `Agregar Imagen: ${property.title}`,
+        csrfToken: req.csrfToken(),
+        property,
+    })
+}
+
+export { properties, newProperty, saveProperty, addImageProperty }

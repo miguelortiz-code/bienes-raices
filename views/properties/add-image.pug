@@ -1,0 +1,16 @@
+extends ../layout/admin
+
+block styles
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.css")
+    meta(name="csrf-token" content=csrfToken) 
+
+block contenido
+    .py-10        
+        div(class="bg-white shadow-lg py-8 px-4 rounded-lg mx-auto max-w-4xl my-10 md:px-10")
+            h2(class="text-center text-3xl font-extrabold capitalize mb-10 text-gray-800")= pagina
+            form(id="image" class="dropzone cursor-pointer border-dashed border-4 text-center w-full min-h-40  h-auto rounded flex justify-center items-center" action=`/properties/add-image/${property.code}` method="POST")
+                input(type="hidden" name="_csrf" value= csrfToken)
+
+            input(type="submit" class="py-3 mt-5 bg-blue-500 hover:bg-blue-700 transition w-full rounded-lg text-white cursor-pointer font-bold uppercase" value="Publicar Propiedad")
+block scripts
+    script(src='/js/addImage.js')

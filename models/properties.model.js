@@ -2,11 +2,10 @@ import { DataTypes } from "sequelize";
 import db from '../config/db.js';
 
 const Properties = db.define('properties',{
-    id:{
+    code:{
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        primaryKey: true
+        allowNull: false
     },
     title: {
         type: DataTypes.STRING(100),
