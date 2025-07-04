@@ -39,6 +39,7 @@ const deleteData = async () =>{
     try {
         await db.sync({force: true});
         console.log("Datos elimiandos correctamente");
+        exit();
     } catch (error) {
         console.log(error);
         exit(1);

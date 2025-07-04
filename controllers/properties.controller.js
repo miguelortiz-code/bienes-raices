@@ -1,10 +1,19 @@
 import { header, validationResult } from 'express-validator';
 import {Categories, Prices, Properties} from '../models/index.js';
-import { where } from 'sequelize';
+
+
 // Vista de mis propiedades
-const properties =  (req, res) =>{
+const properties = async (req, res) =>{
+    const {id} =  req.user;
+    const properties = await Properties.findAll({where: {id_user: id},  include: [
+      {model: Categories, as: 'category'},
+      {model: Prices, as: 'price'}
+    ]})
+
+
     res.render('properties/mis-properties',{
-        pagina: 'Mis propiedades'
+        pagina: 'Mis propiedades',
+        properties
     })
 }
 
