@@ -1,6 +1,6 @@
 import express from 'express';
 import {body} from 'express-validator';
-import { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange } from '../controllers/properties.controller.js';
+import { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty } from '../controllers/properties.controller.js';
 import protectRoutes from '../middleware/protect.routes.middleware.js';
 import upload from '../middleware/uploadFile.middleware.js';
 const router = express.Router();
@@ -34,5 +34,7 @@ router.post('/properties/edit/:code',
     body('parking').isNumeric().withMessage('Debes seleccionar cantidad de parqueaderos'),
     body('latitude').notEmpty().withMessage('Ubica la propiedad en el mapa'),
     saveChange);
+
+router.post('/properties/delete/:code', protectRoutes, deleteProperty)
 
 export default router

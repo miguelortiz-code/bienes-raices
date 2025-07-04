@@ -1,6 +1,6 @@
-import { header, validationResult } from 'express-validator';
+import {unlink} from 'node:fs/promises'
+import { validationResult } from 'express-validator';
 import {Categories, Prices, Properties} from '../models/index.js';
-import { where } from 'sequelize';
 
 
 // Vista de mis propiedades
@@ -14,7 +14,8 @@ const properties = async (req, res) =>{
 
     res.render('properties/mis-properties',{
         pagina: 'Mis propiedades',
-        properties
+        properties,
+        csrfToken: req.csrfToken()
     })
 }
 
@@ -234,4 +235,26 @@ const saveChange = async (req, res) =>{
 
 };
 
-export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange }
+// Función para eliminar una propiedad
+const deleteProperty = async (req, res) =>{
+  const {code }= req.params;
+    
+    // Validar que la propiedad exista
+    const property = await Properties.findOne({where: {code}});
+    if(!property){
+      return res.redirect('/my-properties');
+    }
+
+    // Revisar que la url sea visible solo para el usuario que creo la propiedad
+    if(property.id_user.toString() !== req.user.id.toString()){
+      return  res.redirect('/my-properties');
+    }
+
+    // Eliminar la imagen asociada a la propiedad a eliminar
+    await unlink(`public/uploads/${property.imagen}`)
+    // Eliminar propiedad
+    await property.destroy();
+    res.redirect('/my-properties');
+}
+
+export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty }
