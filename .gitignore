@@ -25,6 +25,7 @@ Thumbs.db
 
 # Optional npm cache directory
 .npm/
+public/uploads
 
 # Optional eslint cache
 .eslintcache

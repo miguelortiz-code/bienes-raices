@@ -64,9 +64,9 @@ const saveProperty  = async (req, res) => {
             id_user
         });
     // Obtener el id de la propiedad Creada
-    const {id} = propertySaved;
+    const {code} = propertySaved;
     // Redireccionar al usuario a la visa de subir imagen
-    res.redirect(`/properties/add-image/${id}`)
+    res.redirect(`/properties/add-image/${code}`)
    }catch(error){ 
         console.log(error)
    }
@@ -96,4 +96,46 @@ const addImageProperty = async (req, res) =>{
     })
 }
 
-export { properties, newProperty, saveProperty, addImageProperty }
+
+const storageImage = async (req, res) => {
+  const { code } = req.params;
+
+  try {
+    // Validar que la propiedad exista
+    const property = await Properties.findOne({ where: { code } });
+    if (!property) {
+      return res.status(404).json({ error: 'Propiedad no encontrada' });
+    }
+
+    // Validar que no esté publicada
+    if (property.published) {
+      return res.status(403).json({ error: 'La propiedad ya está publicada' });
+    }
+
+    // Validar propietario
+    if (req.user.id.toString() !== property.id_user.toString()) {
+      return res.status(403).json({ error: 'No tienes permiso para modificar esta propiedad' });
+    }
+
+    // Almacenar imagen y publicar propiedad
+    property.imagen = req.file.filename;
+    property.published = 1;
+    await property.save();
+    return res.status(200).json({
+      success: true,
+      message: 'Imagen subida y propiedad publicada',
+      filename: req.file.filename,
+      redirect: '/my-properties'
+    });
+
+  
+
+  } catch (error) {
+    console.error('Error al guardar la imagen:', error);
+    return res.status(500).json({ error: 'Error del servidor al guardar la imagen' });
+  }
+};
+
+
+
+export { properties, newProperty, saveProperty, addImageProperty, storageImage }
