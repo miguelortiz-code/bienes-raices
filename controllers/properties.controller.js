@@ -1,5 +1,6 @@
 import { header, validationResult } from 'express-validator';
 import {Categories, Prices, Properties} from '../models/index.js';
+import { where } from 'sequelize';
 
 
 // Vista de mis propiedades
@@ -105,7 +106,7 @@ const addImageProperty = async (req, res) =>{
     })
 }
 
-
+// Funcion para almacenar la imagen
 const storageImage = async (req, res) => {
   const { code } = req.params;
 
@@ -145,6 +146,92 @@ const storageImage = async (req, res) => {
   }
 };
 
+// Vista para el formulario de editar 
+const viewEdit = async (req, res) =>{
+    const {code }= req.params;
+    
+    // Validar que la propiedad exista
+    const property = await Properties.findOne({where: {code}});
+    if(!property){
+      return res.redirect('/my-properties');
+    }
+
+    // Revisar que la url sea visible solo para el usuario que creo la propiedad
+    if(property.id_user.toString() !== req.user.id.toString()){
+      return  res.redirect('/my-properties');
+    }
 
 
-export { properties, newProperty, saveProperty, addImageProperty, storageImage }
+    // Consultar el modelo de categorias y de precios
+    const [categories, prices ]= await Promise.all([
+        Categories.findAll(),
+        Prices.findAll()
+    ]);
+    res.render('properties/edit-property',{
+        pagina: `Editar Propiedad: ${property.title}`,
+        csrfToken: req.csrfToken(),
+        categories,
+        prices,
+        data: property
+    });
+}
+
+// función para editar propiedades
+const saveChange = async (req, res) =>{
+    // Verificar la validacion de los campos
+       let result = validationResult(req);
+
+   if(!result.isEmpty()){
+        // Consultar el modelo de categorias y de precios
+        const [categories, prices ]= await Promise.all([
+        Categories.findAll(),
+        Prices.findAll()
+    ]);
+  
+    return res.render('properties/edit-property',{
+        pagina: 'Editar Propiedad',
+        csrfToken: req.csrfToken(),
+        categories,
+        prices,
+        errors: result.array(),
+        data: req.body
+    });
+  }
+
+    const {code }= req.params;
+    
+    // Validar que la propiedad exista
+    const property = await Properties.findOne({where: {code}});
+    if(!property){
+      return res.redirect('/my-properties');
+    }
+    // Revisar que la url sea visible solo para el usuario que creo la propiedad
+    if(property.id_user.toString() !== req.user.id.toString()){
+      return  res.redirect('/my-properties');
+    }
+
+    // Actualizar el objeto y actualizarlo
+    try {
+      // Obtenemos datos del formulario
+      const {title, description, rooms, bathrooms, parking, street, latitude, longitude, price: id_price, category: id_category} = req.body;
+      property.set({
+        title,
+        description,
+        rooms,
+        bathrooms,
+        parking,
+        street,
+        latitude,
+        longitude,
+        id_price,
+        id_category
+      })
+      await property.save();
+      res.redirect('/my-properties')
+    } catch (error) {
+      console.log(error);
+    }
+
+};
+
+export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange }
