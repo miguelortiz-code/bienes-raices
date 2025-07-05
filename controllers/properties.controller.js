@@ -257,4 +257,26 @@ const deleteProperty = async (req, res) =>{
     res.redirect('/my-properties');
 }
 
-export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty }
+// MOSTRAR UNA PROPIEDAD
+const showProperty = async (req, res) =>{
+  const {code} = req.params
+
+  // Comprobar que la propiedad exista
+  const property = await Properties.findOne({where: {code}, include: [
+    {model: Categories, as: 'category'},
+    {model: Prices, as: 'price'}
+  ]});
+
+  if(!property){
+    return res.redirect('/404')
+  }
+
+  res.render('properties/show-property', {
+    pagina: property.title,
+    property,
+    
+  })
+}
+
+
+export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty }
