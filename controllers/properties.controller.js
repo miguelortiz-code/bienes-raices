@@ -1,22 +1,58 @@
 import {unlink} from 'node:fs/promises'
 import { validationResult } from 'express-validator';
 import {Categories, Prices, Properties} from '../models/index.js';
+import { where } from 'sequelize';
 
 
 // Vista de mis propiedades
 const properties = async (req, res) =>{
-    const {id} =  req.user;
-    const properties = await Properties.findAll({where: {id_user: id},  include: [
-      {model: Categories, as: 'category'},
-      {model: Prices, as: 'price'}
-    ]})
+    // LEER QUERY STRING
+    const {page} = req.query
 
+    const expression = /^[1-9]$/
+    if(!expression.test( page)){
+      return res.redirect('my-properties?page=1')
+    }
 
-    res.render('properties/mis-properties',{
-        pagina: 'Mis propiedades',
-        properties,
-        csrfToken: req.csrfToken()
-    })
+    try {
+      const {id} =  req.user;  
+      // Limites y Offset para el paginador
+      const limit = 5;
+      const offset = (( page * limit) - limit)
+      
+      const [properties, total] = await Promise.all([
+        Properties.findAll({
+          limit,
+          offset,
+          where: {id_user: id},
+          include: [
+            {
+              model: Categories, as: 'category'
+            },
+            {
+              model: Prices, as: 'price'
+            }
+        ]}),
+        Properties.count({
+          where:{
+              id_user: id
+          }
+        })
+      ]);
+
+      res.render('properties/mis-properties',{
+          pagina: 'Mis propiedades',
+          properties,
+          csrfToken: req.csrfToken(),
+          pages: Math.ceil(total / limit),
+          page: Number(page),
+          total,
+          offset,
+          limit
+      });
+    } catch (error) {
+      console.log(error)
+    }
 }
 
 // Vista del formulario para crear las propiedades
