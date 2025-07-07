@@ -1,7 +1,7 @@
 import express from 'express';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
-import {userRoutes, propertyRoutes, appRoutes} from './routes/index.routes.js'
+import {userRoutes, propertyRoutes, appRoutes, apiRoutes} from './routes/index.routes.js'
 
 import db from './config/db.js';
 
@@ -33,7 +33,7 @@ app.set('views', './views');
 app.use('/', appRoutes);
 app.use('/auth', userRoutes);
 app.use('/', propertyRoutes);
-
+app.use('/api/', apiRoutes);
 // Archivos Públicos
 app.use(express.static('public'));
 

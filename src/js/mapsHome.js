@@ -8,4 +8,16 @@
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(maps);
 
+  const obtainProperties = async () =>{
+    try {
+      const url = '/api/properties';
+      const reply = await fetch(url)
+      const properties = await reply.json();
+      console.log(properties);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  obtainProperties()
+
 }())

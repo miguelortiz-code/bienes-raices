@@ -16,7 +16,7 @@
   \****************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n(function(){\r\n  const lat = 4.651002988522;\r\n  const lng = -74.081282901615;\r\n  const maps = L.map(\"maps-home\").setView([lat, lng], 12);\r\n  \r\n  L.tileLayer(\"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\", {\r\n    attribution:\r\n      '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors',\r\n  }).addTo(maps);\r\n\r\n}())\n\n//# sourceURL=webpack://bienes-raices/./src/js/mapsHome.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n(function(){\r\n  const lat = 4.651002988522;\r\n  const lng = -74.081282901615;\r\n  const maps = L.map(\"maps-home\").setView([lat, lng], 12);\r\n  \r\n  L.tileLayer(\"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\", {\r\n    attribution:\r\n      '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors',\r\n  }).addTo(maps);\r\n\r\n  const obtainProperties = async () =>{\r\n    try {\r\n      const url = '/api/properties';\r\n      const reply = await fetch(url)\r\n      const properties = await reply.json();\r\n      console.log(properties);\r\n    } catch (error) {\r\n      console.log(error);\r\n    }\r\n  };\r\n  obtainProperties()\r\n\r\n}())\n\n//# sourceURL=webpack://bienes-raices/./src/js/mapsHome.js?");
 
 /***/ })
 
