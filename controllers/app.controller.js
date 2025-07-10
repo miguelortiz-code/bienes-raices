@@ -1,3 +1,4 @@
+import { where } from 'sequelize';
 import {Categories, Prices, Properties} from  '../models/index.js';
 
 const home = async (req, res) =>{
@@ -41,8 +42,33 @@ const home = async (req, res) =>{
     })
 };
 
-const category = (req, res) => {
+const category = async (req, res) => {
+    // Obtenemos la categoria desde la url
+    const {category} = req.params;
+    // Consultamos la base de datos sobre la categoria de la url
+    const  currentCategory = await Categories.findOne({where: {category}})
+    // Comprobar que la categoría exista
+    if(!currentCategory){
+        return res.redirect('/404');
+    }
+    // Obtener las propiedades de la categoría
+    const properties = await Properties.findAll({
+        include: [
+            {
+                model: Prices,
+                as: 'price'
+            }
+        ],
+        where: {
+            id_category: currentCategory.id
+        }
+    });
 
+    // Mostrar página dependiendo la categoria seleccionada
+    res.render('category', {
+        pagina: `${currentCategory.category} en venta`,
+        properties
+    })
 }
 
 const notfound = (req, res) => {

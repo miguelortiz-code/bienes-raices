@@ -1,0 +1,12 @@
+extends layout/app
+
+block contenido
+        section(class="py-5")
+            h2(class="text-blue-600 text-center uppercase text-4xl font-extrabold pt-10")= pagina
+
+            if properties.length
+                div(class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-15")
+                    each property in properties
+                       include ./templates/card
+            else
+                p(class="text-center text-sm text-red-600 my-10 py-2 bg-red-100 mx-auto max-w-md rounded-lg") No se encontraron resultados
