@@ -26,18 +26,16 @@ block contenido
         section(class="py-5")
             h2(class="text-blue-600 text-center uppercase text-4xl font-extrabold pt-10") casas en venta
             div(class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-15")
-                each house in houses
-                    article(class="bg-white shadow-md rounded-lg")
-                        img(src=`/uploads/${house.imagen}` alt=`Imagen de la casa: ${house.title}` class="object-cover h-72 w-full")
-                        div(class="p-5 space-y-3")
-                            h3(class="text-2xl uppercase font-bold")= house.title
-                            p(class="text-sm text-gray-600") Habitaciones: 
-                                span(class="text-gray-800 font-bold")= house.rooms
-                            p(class="text-sm text-gray-600") baños: 
-                                span(class="text-gray-800 font-bold")= house.bathrooms
-                            p(class="text-sm text-gray-600") precio: 
-                                span(class="text-gray-800 font-bold")= house.price.price
-                            a(href=`/property/${house.code}` class="block w-full bg-blue-500 text-white font-bold capitalize rounded-lg text-center py-2 hover:bg-blue-700" target="_blank") ver propiedad 
+                each property in houses
+                   include ./templates/card
+
+        section(class="py-5")
+            h2(class="text-blue-600 text-center uppercase text-4xl font-extrabold pt-10") apartamentos en venta
+            div(class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-15")
+                each property in apartaments
+                   include ./templates/card
+
+
 block scripts
     script(src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js")
     script(src="/js/mapsHome.js")
