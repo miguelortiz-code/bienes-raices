@@ -2,17 +2,36 @@
   const lat = 4.651002988522;
   const lng = -74.081282901615;
   const maps = L.map("maps-home").setView([lat, lng], 12);
- let markers = new L.FeatureGroup().addTo(maps); 
+  let markers = new L.FeatureGroup().addTo(maps);
+  let properties =  [];
+ // Filtros
+ const filters = {
+    categories: '',
+    prices: ''
+ }
+ const categoriesSelect = document.getElementById('categories');
+ const pricesSelect = document.getElementById('prices');
+ 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(maps);
+  // Filtrado de categorias y precios
+  categoriesSelect.addEventListener('change', (e) =>{
+    filters.categories = +e.target.value;
+    filterProperties();
+  });
+
+  pricesSelect.addEventListener('change', (e) =>{
+    filters.prices = +e.target.value;
+    filterProperties();
+  });
 
   const obtainProperties = async () =>{
     try {
       const url = '/api/properties';
       const reply = await fetch(url)
-      const properties = await reply.json();
+      properties = await reply.json();
       showProperties(properties);
     } catch (error) {
       console.log(error);
@@ -20,6 +39,9 @@
   };
 
   const showProperties = properties =>{
+    // Limpiar los markers previos
+    markers.clearLayers();
+
     properties.forEach(property =>{
       // Agregar Pines
       const marker = new L.marker([property?.latitude, property?.longitude],{
@@ -37,6 +59,19 @@
       markers.addLayer(marker)
     });
   }
+
+
+  // Función para filtrar propiedades
+  const filterProperties = () => {
+    const result  = properties.filter(filterCategory).filter(filterPrice);
+    showProperties(result);
+  }
+
+  // Funcion para filtrar por categorias
+  const filterCategory = property => filters.categories ? property.id_category  === filters.categories : property 
+  // Funcion para filtrar por precio
+  const filterPrice = property => filters.prices ? property.id_price  === filters.prices : property 
+  
   obtainProperties()
 
 }())
