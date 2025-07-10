@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+.leaflet-container .link {
+    color: #FFF;
+    line-height: 1.5;
+}
