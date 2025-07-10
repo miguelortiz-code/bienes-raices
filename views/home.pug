@@ -4,7 +4,25 @@ block styles
 block contenido
     div(class="py-10")
         h1(class="text-center text-4xl font-extrabold uppercase") ubicación en el mapa
-        div(id="maps-home" class="my-10 h-[600px]")
+        
+        div(class="flex flex-col md:flex-row items-center my-10 py-10 gap-4")
+            h2(class="text-sm uppercase text-gray-800 font-bold") filtrar propiedades por:
+
+            div(class="w-full md:w-auto flex items-center gap-2")
+                label(for="categories" class="text-sm w-24 uppercase text-gray-500 font-bold") categorías
+                select(id="categories" class="w-full flex-1 bg-white px-3 py-2 border border-gray-300 outline-none rounded-md shadow")
+                    option(value="") -- Selecciona --
+                    each category in categories
+                        option(value=category.id)= category.category
+
+            div(class="w-full md:w-auto flex items-center gap-2")
+                label(for="prices" class="text-sm w-24 uppercase text-gray-500 font-bold") precios:
+                select(id="prices" class="w-full flex-1 bg-white px-3 py-2 border border-gray-300 rounded-md shadow")
+                    option(value="") -- Selecciona --
+                    each price in prices
+                        option(value=price.id)= price.price
+
+        div(id="maps-home" class="my-5 h-[600px]")
 
 block scripts
     script(src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js")
