@@ -72,7 +72,9 @@ const category = async (req, res) => {
 }
 
 const notfound = (req, res) => {
-
+    res.render('notFound',{
+        pagina: 'No encontrada'
+    })
 }
 
 const search = (req, res) => {

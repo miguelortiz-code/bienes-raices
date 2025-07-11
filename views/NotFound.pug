@@ -1,0 +1,8 @@
+extends layout/app
+
+block contenido
+    section(class="bg-white max-w-md mx-auto shadow-md rounded-lg py-10 space-y-5 ")
+        h2.text-blue-600.text-center.uppercase.text-4xl.font-extrabold.pt-10= pagina
+        p.text-center.text-gray-600.mt-4 La página o categoria que buscas no existe o fue eliminada.
+        div.text-center.mt-6
+            a(href="/" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-all") Volver al inicio
