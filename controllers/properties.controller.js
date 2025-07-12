@@ -1,6 +1,6 @@
 import {unlink} from 'node:fs/promises'
 import { validationResult } from 'express-validator';
-import {Categories, Prices, Properties} from '../models/index.js';
+import {Categories, Prices, Properties, Messages} from '../models/index.js';
 import {isSalesPerson} from '../helpers/identifyUser.js';
 
 
@@ -342,14 +342,21 @@ const sendMessage = async (req, res) =>{
       errors: result.array()
     });
   }
-
-  res.render('properties/show-property', {
-    pagina: property.title,
-    property,
-    csrfToken: req.csrfToken(),
-    user: req.user,
-    isSalesPerson: isSalesPerson(req.user?.id, property.id_user)
-  });
+  // Almacenar Mensaje
+  try{
+    const {message} = req.body;
+    const id_property = property.id;
+    const {id: id_user} = req.user
+    await Messages.create({
+      message,
+      id_property,
+      id_user,
+    });
+  }catch(error){
+    console.log(error)
+  }
+  // Direccionar al usuario al inicio de la página
+  res.redirect('/');
 };
 
 
