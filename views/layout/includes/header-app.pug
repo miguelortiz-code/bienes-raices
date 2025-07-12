@@ -8,8 +8,13 @@ header.bg-blue-600.p-2
             a(href="/auth/login" class="capitalize inline-block hover:bg-blue-800 transition py-2 px-4 rounded-lg") Iniciar Sesión
 div(class="bg-blue-700 py-5 hidden lg:block")
     div(class='container mx-auto flex justify-between')
-        a(href="/category/casa" class="text-sm font-bold uppercase inline-block px-8 py-1 rounded-lg text-white hover:bg-blue-500") Casa
-        a(href="/category/apartamento" class="text-sm font-bold uppercase inline-block px-8 py-1 rounded-lg text-white hover:bg-blue-500") Apartamento
-        a(href="/category/bodegas" class="text-sm font-bold uppercase inline-block px-8 py-1 rounded-lg text-white hover:bg-blue-500") Bodegas
-        a(href="/category/cabañas" class="text-sm font-bold uppercase inline-block px-8 py-1 rounded-lg text-white hover:bg-blue-500") Cabañas
-        a(href="/category/terrenos" class="text-sm font-bold uppercase inline-block px-8 py-1 rounded-lg text-white hover:bg-blue-500") Terrenos
+        nav(class="flex gap-4 items-center")
+            a(href="/category/casa" class="text-sm font-bold uppercase inline-block px-4 py-1 rounded-lg text-white hover:bg-blue-500") Casa
+            a(href="/category/apartamento" class="text-sm font-bold uppercase inline-block px-4 py-1 rounded-lg text-white hover:bg-blue-500") Apartamento
+            a(href="/category/bodegas" class="text-sm font-bold uppercase inline-block px-4 py-1 rounded-lg text-white hover:bg-blue-500") Bodegas
+            a(href="/category/cabañas" class="text-sm font-bold uppercase inline-block px-4 py-1 rounded-lg text-white hover:bg-blue-500") Cabañas
+            a(href="/category/terrenos" class="text-sm font-bold uppercase inline-block px-4 py-1 rounded-lg text-white hover:bg-blue-500") Terrenos
+        form(action="/search" method="POST" class="flex gap-3 items-center")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="text" id="search" name="search" class="p-2 rounded-lg bg-white shadow text-sm outline-none" autocomplete="off" placeholder="Buscar Propiedades")
+            input(type="submit" value="Buscar" class="bg-blue-800 hover:bg-blue-400 transition rounded-lg text-white uppercase font-bold p-2 text-sm  cursor-pointer")

@@ -310,6 +310,7 @@ const showProperty = async (req, res) =>{
   res.render('properties/show-property', {
     pagina: property.title,
     property,
+    csrfToken: req.csrfToken()
     
   })
 }
