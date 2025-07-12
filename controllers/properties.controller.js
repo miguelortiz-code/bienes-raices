@@ -1,7 +1,7 @@
 import {unlink} from 'node:fs/promises'
 import { validationResult } from 'express-validator';
 import {Categories, Prices, Properties} from '../models/index.js';
-import { where } from 'sequelize';
+import {isSalesPerson} from '../helpers/identifyUser.js';
 
 
 // Vista de mis propiedades
@@ -310,8 +310,10 @@ const showProperty = async (req, res) =>{
   res.render('properties/show-property', {
     pagina: property.title,
     property,
-    csrfToken: req.csrfToken()
-    
+    csrfToken: req.csrfToken(),
+    user: req.user,
+    isSalesPerson: isSalesPerson(req.user?.id, property.id_user)
+
   })
 }
 
