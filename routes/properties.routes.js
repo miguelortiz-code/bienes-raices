@@ -1,6 +1,6 @@
 import express from 'express';
 import {body} from 'express-validator';
-import { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty } from '../controllers/properties.controller.js';
+import { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty, sendMessage } from '../controllers/properties.controller.js';
 import {protectRoutes, upload, identifyUser} from '../middleware/index.middleware.js';
 const router = express.Router();
 
@@ -35,7 +35,12 @@ router.post('/properties/edit/:code',
     body('parking').isNumeric().withMessage('Debes seleccionar cantidad de parqueaderos'),
     body('latitude').notEmpty().withMessage('Ubica la propiedad en el mapa'),
     saveChange);
+// Almacenar Mensaje de los clientes
+router.post('/property/:code', identifyUser, 
+    body('message').isLength({max:250}).withMessage('Has superado la cantidad maxima de 250 caracteres').isLength({min:30}).withMessage('El mensaje no puede ir vacío o es muy corto'),
+    sendMessage); // Area Pública
 
+// Router DELETE
 router.post('/properties/delete/:code', protectRoutes, deleteProperty)
 
 export default router

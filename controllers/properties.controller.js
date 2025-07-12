@@ -313,9 +313,44 @@ const showProperty = async (req, res) =>{
     csrfToken: req.csrfToken(),
     user: req.user,
     isSalesPerson: isSalesPerson(req.user?.id, property.id_user)
-
-  })
+  });
 }
 
+// Función para mandar un mensaje al vendedor
+const sendMessage = async (req, res) =>{
+  const {code} = req.params
 
-export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty }
+  // Comprobar que la propiedad exista
+  const property = await Properties.findOne({where: {code}, include: [
+    {model: Categories, as: 'category'},
+    {model: Prices, as: 'price'}
+  ]});
+
+  if(!property){
+    return res.redirect('/404')
+  }
+
+  // Renderizar errores
+  let result = validationResult(req);
+  if(!result.isEmpty()){
+    return  res.render('properties/show-property', {
+      pagina: property.title,
+      property,
+      csrfToken: req.csrfToken(),
+      user: req.user,
+      isSalesPerson: isSalesPerson(req.user?.id, property.id_user),
+      errors: result.array()
+    });
+  }
+
+  res.render('properties/show-property', {
+    pagina: property.title,
+    property,
+    csrfToken: req.csrfToken(),
+    user: req.user,
+    isSalesPerson: isSalesPerson(req.user?.id, property.id_user)
+  });
+};
+
+
+export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty, sendMessage }
