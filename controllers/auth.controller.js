@@ -14,6 +14,11 @@ const login = (req, res) => {
   });
 };
 
+// Función para cerrar sesión
+const logout = (req, res)=>{
+  return res.clearCookie('_token').status(200).redirect('/auth/login')
+};
+
 // Función para validar el formulario de login
 const loginForm = async (req, res) => {
   // Validación de campos
@@ -333,6 +338,7 @@ const newPassword = async (req, res) => {
 
 export {
   login,
+  logout,
   register,
   forgotPassword,
   registerForm,

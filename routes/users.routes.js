@@ -1,5 +1,5 @@
 import express from 'express';
-import {login, register, forgotPassword, registerForm, ConfirmAccount, resetPassword, checkToken, newPassword, loginForm} from '../controllers/auth.controller.js';
+import {login, register, forgotPassword, registerForm, ConfirmAccount, resetPassword, checkToken, newPassword, loginForm, logout} from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
@@ -12,6 +12,7 @@ router.get('/confirm-account/:token',ConfirmAccount);
 router.post('/register', registerForm);
 router.post('/login', loginForm);
 router.post('/recover-password', resetPassword);
+router.post('/logout', logout)
 
 // Almacenar nueva contraseña
 router.get('/recover-password/:token', checkToken);
