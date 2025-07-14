@@ -290,6 +290,28 @@ const deleteProperty = async (req, res) =>{
     res.redirect('/my-properties');
 }
 
+// Modificar el estado de la propiedad
+const changeState = async (req, res) =>{
+  const {code }= req.params;
+    
+    // Validar que la propiedad exista
+    const property = await Properties.findOne({where: {code}});
+    if(!property){
+      return res.redirect('/my-properties');
+    }
+
+    // Revisar que la url sea visible solo para el usuario que creo la propiedad
+    if(property.id_user.toString() !== req.user.id.toString()){
+      return  res.redirect('/my-properties');
+    }
+    // Actualizar estado de la propiedad
+    property.published = !property.published;
+    await property.save();
+    res.json({
+      result: true
+    });
+};
+
 // MOSTRAR UNA PROPIEDAD
 const showProperty = async (req, res) =>{
   const {code} = req.params
@@ -300,7 +322,7 @@ const showProperty = async (req, res) =>{
     {model: Prices, as: 'price'}
   ]});
 
-  if(!property){
+  if(!property || !property.published){
     return res.redirect('/404')
   }
 
@@ -395,4 +417,4 @@ const seeMessage = async (req, res) =>{
   })
 };
 
-export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty, sendMessage, seeMessage }
+export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, changeState, showProperty, sendMessage, seeMessage }

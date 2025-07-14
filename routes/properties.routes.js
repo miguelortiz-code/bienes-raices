@@ -1,6 +1,6 @@
 import express from 'express';
 import {body} from 'express-validator';
-import { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty, sendMessage, seeMessage } from '../controllers/properties.controller.js';
+import { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, changeState, showProperty, sendMessage, seeMessage } from '../controllers/properties.controller.js';
 import {protectRoutes, upload, identifyUser} from '../middleware/index.middleware.js';
 const router = express.Router();
 
@@ -43,5 +43,8 @@ router.post('/property/:code', identifyUser,
 
 // Router DELETE
 router.post('/properties/delete/:code', protectRoutes, deleteProperty)
+
+// Router PUT
+router.put('/property/:code', protectRoutes, changeState)
 
 export default router
