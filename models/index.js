@@ -8,6 +8,7 @@ import Messages from './message.model.js';
 Properties.belongsTo(Prices, {foreignKey: 'id_price'}); // Join de la tabla propiedades con la tabla precios
 Properties.belongsTo(Categories, {foreignKey: 'id_category'}); // Join de la tabla propiedades con la tabla categorias
 Properties.belongsTo(Users, {foreignKey: 'id_user'}); // Join de la tabla propiedades con la tabla usuarios
+Properties.hasMany(Messages, {foreignKey: 'id_property'});
 // JOIN DE LOS MENSAJES
 Messages.belongsTo(Properties, {foreignKey: 'id_property'}); // Join de la tabla mensajes con la tabla propiedades
 Messages.belongsTo(Users, {foreignKey: 'id_user'}); // Join de la tabla mensajes con la tabla usuarios

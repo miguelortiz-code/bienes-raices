@@ -1,7 +1,7 @@
 import {unlink} from 'node:fs/promises'
 import { validationResult } from 'express-validator';
-import {Categories, Prices, Properties, Messages} from '../models/index.js';
-import {isSalesPerson} from '../helpers/identifyUser.js';
+import {Categories, Prices, Properties, Messages, Users} from '../models/index.js';
+import {isSalesPerson, formatDate} from '../helpers/identifyUser.js';
 
 
 // Vista de mis propiedades
@@ -26,12 +26,9 @@ const properties = async (req, res) =>{
           offset,
           where: {id_user: id},
           include: [
-            {
-              model: Categories, as: 'category'
-            },
-            {
-              model: Prices, as: 'price'
-            }
+            { model: Categories, as: 'category'},
+            { model: Prices, as: 'price'},
+            { model: Messages, as: 'messages'}
         ]}),
         Properties.count({
           where:{
@@ -360,4 +357,42 @@ const sendMessage = async (req, res) =>{
 };
 
 
-export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty, sendMessage }
+// Leer mensajes recibidos
+const seeMessage = async (req, res) =>{
+  // Obtener el code de la url de la propiedad seleccionada
+  const {code } = req.params;
+  
+  // Validar que la propiedad exista
+  const property = await Properties.findOne(
+    {
+      where: {code},
+      include: [
+        { 
+          model: Messages, as: 'messages',
+          include: [
+            {model: Users.scope('hideData'), as: 'user'}
+          ]
+        },
+
+      ]
+    },
+  );
+
+  if(!property){
+    return res.redirect('/my-properties');
+  }
+
+  // Revisar que quien visita la URL, es quien creo la propiedad
+  if(property.id_user.toString() !== req.user.id.toString()){
+    return res.redirect('/my-properties');
+  }
+
+  res.render('properties/message',{
+    pagina: `Mensajes de la propiedad ${property.title}`,
+    messages: property.messages,
+    property,
+    formatDate
+  })
+};
+
+export { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty, sendMessage, seeMessage }

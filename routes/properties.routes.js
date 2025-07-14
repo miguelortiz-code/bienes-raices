@@ -1,6 +1,6 @@
 import express from 'express';
 import {body} from 'express-validator';
-import { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty, sendMessage } from '../controllers/properties.controller.js';
+import { properties, newProperty, saveProperty, addImageProperty, storageImage, viewEdit, saveChange, deleteProperty, showProperty, sendMessage, seeMessage } from '../controllers/properties.controller.js';
 import {protectRoutes, upload, identifyUser} from '../middleware/index.middleware.js';
 const router = express.Router();
 
@@ -9,6 +9,7 @@ router.get('/properties/new-property',protectRoutes,  newProperty);
 router.get('/properties/add-image/:code', protectRoutes, addImageProperty)
 router.get('/properties/edit/:code', protectRoutes, viewEdit)
 router.get('/property/:code', identifyUser, showProperty); // Area Pública
+router.get('/message/:code', protectRoutes, seeMessage);
 
 // Router POST
 router.post('/properties/new-property',
