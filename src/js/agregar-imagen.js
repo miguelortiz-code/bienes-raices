@@ -7,7 +7,7 @@ const token = document
 Dropzone.options.image = {
   dictDefaultMessage: "Sube tus imágenes aquí",
   acceptedFiles: ".png, .jpg, .jpeg, .webp",
-  maxFilesize: 3,
+  maxFilesize: 10,
   maxFiles: 1,
   parallelUploads: 1,
   autoProcessQueue: false,
