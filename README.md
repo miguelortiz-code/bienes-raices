@@ -1,6 +1,6 @@
 # 🏡 Bienes Raíces
 
-La aplicación permite a los usuarios publicar propiedades para **vender o arrendar**, visualizar información detallada de cada inmueble, y enviar **mensajes directos a los vendedores** interesados. También incluye una interfaz administrativa para gestionar propiedades, mensajes y usuarios de forma eficiente.
+La aplicación permite a los usuarios publicar propiedades para **vender o arrendar**, visualizar información detallada de cada inmueble, y enviar **mensajes directos a los vendedores** interesados. También incluye una interfaz administrativa para gestionar propiedades, mensajes de forma eficiente.
 
 ---
 
@@ -77,3 +77,17 @@ Puedes iniciar sesión con estos usuarios predefinidos:
 
 ## 👤 Autor
 Desarrollado por Miguel.
+
+## 🖼️ Capturas de pantalla
+
+### Página principal
+![Homepage](docs/home.png)
+
+### Sección de casas y apartamentos
+![Section Home and Apartament](docs/section-home.png)
+
+### Vista de una propiedad
+![Property View](docs/property.png)
+
+### Panel administrativo
+![Property View](docs/admin.png)
