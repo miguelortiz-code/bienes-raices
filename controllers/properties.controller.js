@@ -1,4 +1,3 @@
-import { unlink } from 'node:fs/promises';
 import { validationResult } from 'express-validator';
 import cloudinary from '../config/cloudinary.js';
 import {Categories, Prices, Properties, Messages, Users} from '../models/index.js';
@@ -47,7 +46,6 @@ const properties = async (req, res) =>{
           total,
           offset,
           limit,
-          NODE_ENV: process.env.NODE_ENV,
           CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
       });
     } catch (error) {
@@ -161,17 +159,10 @@ const storageImage = async (req, res) => {
       return res.status(403).json({ error: 'Sin permiso' });
     }
 
-    // Obtener el nombre del archivo o el public_id
-   let fileName;
-    if (process.env.NODE_ENV === 'production') {
-      // req.file.filename contiene solo el public_id
-      const resource = await cloudinary.api.resource(req.file.filename);
-      fileName = `${resource.public_id}.${resource.format}`;
-    } else {
-      // En local ya viene con extensión
-      fileName = req.file.filename;
-    }
-
+    // Obtener info de la imagen desde Cloudinary
+    const resource = await cloudinary.api.resource(req.file.filename);
+    const publicId = resource.public_id.split('/').pop();
+    const fileName = `${publicId}.${resource.format}`;
 
     property.imagen = fileName;
     property.published = true;
@@ -180,8 +171,7 @@ const storageImage = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Imagen subida y propiedad publicada',
-      redirect: '/my-properties',
-      fileName
+      redirect: '/my-properties'
     });
   } catch (error) {
     console.log(error);
@@ -292,22 +282,15 @@ const deleteProperty = async (req, res) =>{
       return  res.redirect('/my-properties');
     }
 
-    //Eliminar la imagen en cloudinary (En Producción)
-    if(process.env.NODE_ENV === 'production' && property.imagen){
-      try {
-        await cloudinary.uploader.destroy(`uploads/${property.imagen}`);
-      } catch (error) {
-        console.log(`❌ Error eliminando imagen de Cloudinary: ${error}`);
-      }
-    }
+    // Eliminar la imagen de Cloudinary
+    if (property.imagen) {
+      const publicId = property.imagen.split('.').shift();
 
-    // Eliminar la imagne local (Desarrollo)
-    if(process.env.NODE_ENV === 'development' && property.imagen){
-      try {
-        await unlink(`public/uploads/${property.imagen}`);
-      } catch (error) {
-        console.log(`❌ Error eliminando imagen localmente: ${error}`)
-      }
+        try {
+          await cloudinary.uploader.destroy(`properties/${publicId}`);
+        } catch (error) {
+          console.log(`❌ Error eliminando imagen de Cloudinary: ${error}`);
+        }
     }
 
     // Eliminar propiedad
@@ -356,7 +339,8 @@ const showProperty = async (req, res) =>{
     property,
     csrfToken: req.csrfToken(),
     user: req.user,
-    isSalesPerson: isSalesPerson(req.user?.id, property.id_user)
+    isSalesPerson: isSalesPerson(req.user?.id, property.id_user),
+    CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
   });
 }
 

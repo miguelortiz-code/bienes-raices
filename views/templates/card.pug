@@ -1,5 +1,5 @@
 article(class="bg-white shadow-md rounded-lg")
-    img(src=`/uploads/${property.imagen}` alt=`Imagen de la casa: ${property.title}` class="object-cover h-72 w-full")
+    img(src=`https://res.cloudinary.com/${CLOUDINARY_NAME}/image/upload/properties/${property.imagen}` alt=`Imagen de la casa: ${property.title}` class="object-cover h-72 w-full")
     div(class="p-5 space-y-3")
         h3(class="text-xl uppercase font-bold")= property.title
         p(class="text-sm text-gray-600") Habitaciones: 

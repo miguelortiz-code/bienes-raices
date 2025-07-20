@@ -39,7 +39,8 @@ const home = async (req, res) =>{
         prices,
         houses,
         apartaments,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
     })
 };
 
@@ -69,7 +70,8 @@ const category = async (req, res) => {
     res.render('category', {
         pagina: `${currentCategory.category} en venta`,
         properties,
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
     })
 }
 

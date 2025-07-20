@@ -7,7 +7,7 @@ const token = document
 Dropzone.options.image = {
   dictDefaultMessage: "Sube tus imágenes aquí",
   acceptedFiles: ".png, .jpg, .jpeg, .webp",
-  maxFilesize: 10,
+  maxFilesize: 10, // MB
   maxFiles: 1,
   parallelUploads: 1,
   autoProcessQueue: false,
@@ -20,6 +20,7 @@ Dropzone.options.image = {
   init() {
     const dz = this;
     const btnPublish = document.getElementById("publish");
+    let uploadSuccess = false; // ⛳ Flag de éxito
 
     // 1️⃣ Evita doble clic
     btnPublish.addEventListener("click", () => {
@@ -28,29 +29,30 @@ Dropzone.options.image = {
       dz.processQueue();
     });
 
-    // 2️⃣ Si ocurre error, re‑habilita el botón
+    // 2️⃣ Al subir con éxito, marcar flag y guardar redirect (opcional)
+    dz.on("success", (_file, response) => {
+      uploadSuccess = response.success; // Solo si backend confirma éxito
+    });
+
+    // 3️⃣ Si ocurre error, re‑habilita el botón y muestra mensaje
     dz.on("error", (_file, msg) => {
       console.error("Error al subir imagen:", msg);
       alert("El formato de la imagen no es permitido o es demasiado pesado");
+
       btnPublish.disabled = false;
       btnPublish.classList.remove("opacity-50", "cursor-not-allowed");
+
+      uploadSuccess = false;
     });
 
-    /* 3️⃣ Flujo deseado:
-          a) queuecomplete garantiza que el ✔️ ya está en pantalla.
-          b) alert() → preloader → redirect
-    */
+    // 4️⃣ Cuando termina la cola, evaluar si todo fue bien
     dz.on("queuecomplete", () => {
-      // Verifica que no queden archivos pendientes ni con error
-      if (dz.getActiveFiles().length === 0 && dz.getRejectedFiles().length === 0) {
-        // Mostrar alerta (bloquea hasta que el usuario la cierra)
+      if (uploadSuccess) {
         alert("Propiedad publicada con éxito");
 
-        // Mostrar preloader
         const preloader = document.getElementById("preloader");
         if (preloader) preloader.classList.remove("hidden");
 
-        // Redirigir tras breve pausa
         setTimeout(() => {
           window.location.href = "/my-properties";
         }, 3000);
