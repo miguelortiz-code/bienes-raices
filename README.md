@@ -43,7 +43,7 @@ Puedes iniciar sesión con estos usuarios predefinidos:
   🔑 **Prueba123**
 
 - 📧 **correo@gmail.com**  
-  🔑 **Prueba123**
+  🔑 **Prueba123.**
 
 > *Credenciales solo para fines de prueba*
 
