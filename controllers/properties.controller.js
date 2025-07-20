@@ -1,5 +1,6 @@
-import {unlink} from 'node:fs/promises'
+import { unlink } from 'node:fs/promises';
 import { validationResult } from 'express-validator';
+import cloudinary from '../config/cloudinary.js';
 import {Categories, Prices, Properties, Messages, Users} from '../models/index.js';
 import {isSalesPerson, formatDate} from '../helpers/identifyUser.js';
 
@@ -45,7 +46,9 @@ const properties = async (req, res) =>{
           page: Number(page),
           total,
           offset,
-          limit
+          limit,
+          NODE_ENV: process.env.NODE_ENV,
+          CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
       });
     } catch (error) {
       console.log(error)
@@ -145,38 +148,44 @@ const storageImage = async (req, res) => {
   const { code } = req.params;
 
   try {
-    // Validar que la propiedad exista
     const property = await Properties.findOne({ where: { code } });
     if (!property) {
       return res.status(404).json({ error: 'Propiedad no encontrada' });
     }
 
-    // Validar que no esté publicada
     if (property.published) {
-      return res.status(403).json({ error: 'La propiedad ya está publicada' });
+      return res.status(403).json({ error: 'Ya publicada' });
     }
 
-    // Validar propietario
     if (req.user.id.toString() !== property.id_user.toString()) {
-      return res.status(403).json({ error: 'No tienes permiso para modificar esta propiedad' });
+      return res.status(403).json({ error: 'Sin permiso' });
     }
 
-    // Almacenar imagen y publicar propiedad
-    property.imagen = req.file.filename;
-    property.published = 1;
+    // Obtener el nombre del archivo o el public_id
+   let fileName;
+    if (process.env.NODE_ENV === 'production') {
+      // req.file.filename contiene solo el public_id
+      const resource = await cloudinary.api.resource(req.file.filename);
+      fileName = `${resource.public_id}.${resource.format}`;
+    } else {
+      // En local ya viene con extensión
+      fileName = req.file.filename;
+    }
+
+
+    property.imagen = fileName;
+    property.published = true;
     await property.save();
-    return res.status(200).json({
+
+    res.status(200).json({
       success: true,
       message: 'Imagen subida y propiedad publicada',
-      filename: req.file.filename,
-      redirect: '/my-properties'
+      redirect: '/my-properties',
+      fileName
     });
-
-  
-
   } catch (error) {
-    console.error('Error al guardar la imagen:', error);
-    return res.status(500).json({ error: 'Error del servidor al guardar la imagen' });
+    console.log(error);
+    res.status(500).json({ error: 'Error interno' });
   }
 };
 
@@ -283,8 +292,24 @@ const deleteProperty = async (req, res) =>{
       return  res.redirect('/my-properties');
     }
 
-    // Eliminar la imagen asociada a la propiedad a eliminar
-    await unlink(`public/uploads/${property.imagen}`)
+    //Eliminar la imagen en cloudinary (En Producción)
+    if(process.env.NODE_ENV === 'production' && property.imagen){
+      try {
+        await cloudinary.uploader.destroy(`uploads/${property.imagen}`);
+      } catch (error) {
+        console.log(`❌ Error eliminando imagen de Cloudinary: ${error}`);
+      }
+    }
+
+    // Eliminar la imagne local (Desarrollo)
+    if(process.env.NODE_ENV === 'development' && property.imagen){
+      try {
+        await unlink(`public/uploads/${property.imagen}`);
+      } catch (error) {
+        console.log(`❌ Error eliminando imagen localmente: ${error}`)
+      }
+    }
+
     // Eliminar propiedad
     await property.destroy();
     res.redirect('/my-properties');

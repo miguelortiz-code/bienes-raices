@@ -15,8 +15,8 @@ block contenido
                     each property in properties
                         li
                             div(class="p-6 w-full flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-8 md:space-y-0 gap-4")
-                                div(class="sm:w-1/4 md:w1/6")
-                                    img(src=`uploads/${property.imagen}` alt=`Imagen de la propiedad ${property.title}` class="w-full block")
+                                figure(class="sm:w-1/4 md:w1/6 w-50 h-50")
+                                    img(src=(NODE_ENV === 'production' ? `https://res.cloudinary.com/${CLOUDINARY_NAME}/image/upload/uploads/${property.imagen}` : `/uploads/${property.imagen}`) alt=`Imagen de ${property.title}` class="w-full h-full object-cover block")
                                 div(class="sm:w-2/4 md:w-3/6 lg:w-4/6 text-center space-y-3")
                                     a(href=`/property/${property.code}` class="inline-block text-2xl font-extrabold text-blue-600 uppercase truncate")= property.title
                                     p(class="text-sm text-black font-bold")= property.category.category
